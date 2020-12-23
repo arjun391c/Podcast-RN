@@ -8,6 +8,7 @@ import PodcastScreen from '../screens/PodcastScreen'
 import { routes } from './routes'
 import { IPodcast } from '../utils/types/Podcast'
 import { truncate } from '../utils/helpers/text'
+import { theme } from '../../theme'
 
 type MainStackParams = {
     MainTab: object,
@@ -21,7 +22,7 @@ const MainNavigation: React.FC = () => {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{
-                    headerShown: false
+                    headerShown: false,
                 }}
             >
                 <Stack.Screen name="MainTab" component={MainTabNavigation}/>
@@ -29,8 +30,7 @@ const MainNavigation: React.FC = () => {
                     component={PodcastScreen}
                     options={({route}) => {
                         return {
-                            title: truncate(route.params?.podcast.trackName, 30),
-                            headerShown: true
+                            title: truncate(route.params?.podcast.trackName, 30)
                         }
                     }}
                     />

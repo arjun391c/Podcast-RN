@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {SafeAreaView, StatusBar} from 'react-native'
+import { theme } from '../theme'
 //navigators
 import MainNavigation from './navigators/MainNavigation'
 //screens
@@ -14,8 +15,8 @@ const Routes: React.FC = () => {
 
     return (
         <>  
-            <StatusBar backgroundColor="transparent" barStyle="dark-content"/>
-            <SafeAreaView style={{flex: 1}}>
+            <StatusBar backgroundColor={theme.color.greyDarkest} barStyle="light-content"/>
+            <SafeAreaView style={{flex: 1, backgroundColor: theme.color.greyDarkest}}>
                 {isSplash ? <SplashScreen/> : <MainNavigation/>}
             </SafeAreaView>
         </>

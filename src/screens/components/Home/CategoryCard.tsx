@@ -6,17 +6,17 @@ const CategoryCard: React.FC<{color: string, icon: string}> = ({color, icon}) =>
     const bg = `${color}50`
 
     return (
-        <Box center mr="sm">
-            <Box circle={75} bg={bg} center mb={4}>
+        <Box center>
+            <Box circle={45} center mb={4} style={{borderWidth: 1, borderColor: bg}}>
                 <FeatherIcon 
                     name={icon}
-                    size={25}
+                    size={15}
                     color={color}
                 />
             </Box>
-            <Box>
+            {/* <Box>
                 <Text size="xs">Education</Text>
-            </Box>
+            </Box> */}
         </Box>
     )
 }

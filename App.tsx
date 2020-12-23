@@ -5,11 +5,17 @@ import { UtilityThemeProvider } from 'react-native-design-utility'
 import Routes from './src'
 //theme
 import {theme} from './src/utils/constants/theme'
+//context
+
+import { RootStoreProvider } from './src/context/RootStoreContext'
+import { rootStore } from './src/stores/RootStore'
 
 const App: React.FC = () => (
-  <UtilityThemeProvider theme={theme}>
-    <Routes/>
-  </UtilityThemeProvider>
+  <RootStoreProvider rootStore={rootStore}>
+    <UtilityThemeProvider theme={theme}>
+      <Routes/>
+    </UtilityThemeProvider>
+  </RootStoreProvider>
 )
 
 export default App
