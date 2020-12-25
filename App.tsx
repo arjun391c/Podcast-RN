@@ -6,16 +6,18 @@ import Routes from './src'
 //theme
 import {theme} from './src/utils/constants/theme'
 //context
-
+import Store from './src/context/store'
 import { RootStoreProvider } from './src/context/RootStoreContext'
 import { rootStore } from './src/stores/RootStore'
 
 const App: React.FC = () => (
-  <RootStoreProvider rootStore={rootStore}>
-    <UtilityThemeProvider theme={theme}>
-      <Routes/>
-    </UtilityThemeProvider>
-  </RootStoreProvider>
+  <Store>
+    <RootStoreProvider rootStore={rootStore}>
+      <UtilityThemeProvider theme={theme}>
+        <Routes/>
+      </UtilityThemeProvider>
+    </RootStoreProvider>
+  </Store>
 )
 
 export default App

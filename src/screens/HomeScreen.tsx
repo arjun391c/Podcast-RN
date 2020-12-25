@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Box, Text} from 'react-native-design-utility'
 import {ScrollView } from 'react-native'
-import TrackPlayer from 'react-native-track-player'
 import { theme } from '../../theme'
 //components
 import PodcastCard from './components/Home/PodcastCard'
@@ -11,7 +10,6 @@ import Header from './components/common/Header'
 //api
 import {itunesApiServices} from '../utils/api/itunesApiServices'
 import { IPodcast } from '../utils/types/Podcast'
-import TrackPlayerServices from '../utils/TrackPlayerServices'
 
 const HomeScreen: React.FC = () => {
     const [podcasts, setPodcasts] = useState<IPodcast[]>([])
@@ -23,12 +21,6 @@ const HomeScreen: React.FC = () => {
             })
     }, [])
 
-    useEffect(() => {
-        TrackPlayer.setupPlayer()
-            .then(() => console.log('Player is setup!'))
-        
-        TrackPlayer.registerPlaybackService(() => TrackPlayerServices);
-    }, [])
 
     return (
         <ScrollView style={{flex: 1}}>

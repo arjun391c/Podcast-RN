@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import MainTabNavigation from './MainTabNavigation'
 //screens
 import PodcastScreen from '../screens/PodcastScreen'
+import TrackScreen from '../screens/TrackScreen'
 import { routes } from './routes'
 import { IPodcast } from '../utils/types/Podcast'
 import { truncate } from '../utils/helpers/text'
@@ -12,7 +13,8 @@ import { theme } from '../../theme'
 
 type MainStackParams = {
     MainTab: object,
-    Podcast: {podcast: IPodcast}
+    Podcast: {podcast: IPodcast},
+    Track: object
 }
 
 const Stack = createStackNavigator<MainStackParams>()
@@ -21,6 +23,7 @@ const MainNavigation: React.FC = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator
+                // initialRouteName="Track"
                 screenOptions={{
                     headerShown: false,
                 }}
@@ -33,6 +36,14 @@ const MainNavigation: React.FC = () => {
                             title: truncate(route.params?.podcast.trackName, 30)
                         }
                     }}
+                    />
+                <Stack.Screen name="Track"
+                    component={TrackScreen}
+                    // options={({route}) => {
+                    //     return {
+                    //         title: truncate(route.params?.podcast.trackName, 30)
+                    //     }
+                    // }}
                     />
             </Stack.Navigator>
         </NavigationContainer>

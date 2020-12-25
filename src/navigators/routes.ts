@@ -3,5 +3,6 @@ export const routes = {
     LIBRARY: 'Library',
     DOWNLOADS: 'Downloads',
     PROFILE: 'Profile',
-    PODCAST: 'Podcast'
+    PODCAST: 'Podcast',
+    TRACK: 'Track'
 }

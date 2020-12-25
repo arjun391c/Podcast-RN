@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import { Box, Text } from 'react-native-design-utility'
-import TrackPlayer from 'react-native-track-player'
+import TrackPlayer, {STATE_PLAYING, STATE_READY} from 'react-native-track-player'
 import {RouteProp, useNavigation} from '@react-navigation/native'
 import { IPodcast } from '../utils/types/Podcast'
 import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 import { feedUrlServices } from '../utils/api/feedUrlServices'
-import { Image, ActivityIndicator, ScrollView, ImageBackground, Dimensions, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, ScrollView, ImageBackground, Dimensions, TouchableOpacity } from 'react-native'
 import { Feed } from 'react-native-rss-parser'
 import { theme } from '../../theme'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 //components
 import Logo from './components/common/Logo'
-// import Divider from './components/common/Divider'
 import CategoryCard from './components/Home/CategoryCard'
 import LinearGradient from 'react-native-linear-gradient'
+//context 
+import { Context as PlayerContext } from '../context/store/reducers/playerReducer'
 //image
 const logoWhite = '../assets/images/logo_white.png'
 
@@ -25,7 +26,8 @@ const PodcastScreen: React.FC<{route: PodcastScreenRouteProp}> = ({route}) => {
     const {podcast} = route.params
     const [feed, setfeed] = useState<Feed | null>(null)
     const {goBack} = useNavigation()
-    
+    const {state, setPlay, setPause, setTrack} = useContext(PlayerContext)
+
     useEffect(() => {
         feedUrlServices.getFeed(podcast.feedUrl)
             .then((result) => {
@@ -33,11 +35,7 @@ const PodcastScreen: React.FC<{route: PodcastScreenRouteProp}> = ({route}) => {
             })
     }, [])
 
-    // if(!feed) return (
-    //     <Box f={1} bg="greyDarkest" center>
-    //         <ActivityIndicator color={theme.color.white} size="large"/>
-    //     </Box>
-    // )
+    const isPlaying = state.playerState === STATE_PLAYING
 
     return (
         <Box f={1} bg="greyDarkest">
@@ -53,10 +51,39 @@ const PodcastScreen: React.FC<{route: PodcastScreenRouteProp}> = ({route}) => {
                                 </TouchableOpacity>
                                 <Logo dir={require(logoWhite)}/>
                             </Box>
-                            <Box pb="xs">                          
-                                <Text numberOfLines={1} color="white" weight="bold" size="lg">{podcast.trackName.toUpperCase()}</Text>
-                                <Text color="white" numberOfLines={3}>{feed?.description}</Text>
-                            </Box>
+                            <Box pb="xs">                                                         
+                                {!isPlaying
+                                    ?  (
+                                        <>
+                                            <Text numberOfLines={1} color="white" weight="bold" size="lg">{podcast.trackName.toUpperCase()}</Text>
+                                            <Text color="white" numberOfLines={3}>{feed?.description}</Text>
+                                        </>
+                                        )
+                                    :   (
+                                        <Box>           
+                                            <Box bg="greyDarkest" py={1} radius={10} w={110} center>
+                                                <Text color={'#50E4C2'} weight="bold" size="xs" >NOW PLAYING</Text>
+                                            </Box>
+                                            <Box dir="row" justify="between">                                      
+                                                <Box w="80%">
+                                                    <Text numberOfLines={1} color="white" weight="bold" size="lg">{podcast.trackName.toUpperCase()}</Text>
+                                                    <Text color="greyDarker" weight="bold" size="sm" numberOfLines={1}>{state.track?.title}</Text>
+                                                </Box>
+                                                <Box w="15%">
+                                                    <TouchableOpacity onPress={async () => {
+                                                        setPause()
+                                                    }}>
+                                                        <CategoryCard color={'#50E4C2'} icon={`${isPlaying ? "pause" : "play"}`}/>
+                                                    </TouchableOpacity>
+                                                </Box>
+                                            </Box>
+                                            <Box>
+                                                <Text>Slider</Text>
+                                            </Box>
+                                        </Box>
+                                        )
+                                }
+                            </Box>                         
                         </LinearGradient>
                     </ImageBackground>
                     {feed ?
@@ -64,25 +91,21 @@ const PodcastScreen: React.FC<{route: PodcastScreenRouteProp}> = ({route}) => {
                     feed.items.map((item, i) => (
                         <Box key={item.id} px="sm">
                             <Box dir="row" py="sm" align="center">
-                                {/* <Box h={50} w={50}>
-                                    <Image source={{uri: item.itunes.image}} style={{flex: 1}}/>
-                                </Box> */}
                                 <TouchableOpacity onPress={async () => {
-                                    await TrackPlayer.reset()
-                                    await TrackPlayer.add({
-                                        id: 'unique track id', // Must be a string, required
-                                        url: item.links[0].url, // Load media from the network
-
-                                        title: 'Avaritia',
-                                        artist: 'deadmau5',
-                                        album: 'while(1<2)',
-                                        genre: 'Progressive House, Electro House',
-                                        date: '2014-05-20T07:00:00+00:00', // RFC 3339
-                                    })
-
-                                    TrackPlayer.play()
+                                    if (isPlaying) {
+                                        setPause()
+                                    } else {                                     
+                                        setTrack({
+                                            id: item.id,
+                                            url: item.links[0].url,
+                                            title: item.title,
+                                            artist: podcast.artistName,
+                                            artwork: item.itunes.image,
+                                            duration: item.itunes.duration
+                                        })
+                                    }
                                 }}>
-                                    <CategoryCard color={'#50E4C2'} icon="play"/>
+                                    <CategoryCard color={'#50E4C2'} icon={`${((state.track?.title === item.title) && isPlaying) ? "pause" : "play"}`}/>
                                 </TouchableOpacity>
                                 <Box ml="sm" f={1}>
                                     <Text size="sm" weight="bold" ls={1.5} color="white" numberOfLines={2}>{item.title}</Text>
@@ -95,7 +118,6 @@ const PodcastScreen: React.FC<{route: PodcastScreenRouteProp}> = ({route}) => {
                                     <FeatherIcon color={'#50E4C2'} size={25} name="download-cloud"/>
                                 </Box>
                             </Box>
-                            {/* {(i != feed.items.length - 1) && <Divider bg="greyDarker"/>} */}
                         </Box>
                     ))
                     : (
