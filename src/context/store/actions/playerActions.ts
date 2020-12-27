@@ -12,17 +12,17 @@ interface ITract {
     artwork?: string
 }
 
-const setPlay = dispatch => async () => {
+const setPlay: React.Dispatch<any> = dispatch => async () => {
     await TrackPlayer.play()
     // dispatch({type: SET_PLAYING, payload: true})
 }
 
-const setPause = dispatch => async () => {
+const setPause: React.Dispatch<any>  = dispatch => async () => {
     await TrackPlayer.pause()
     // dispatch({type: SET_PLAYING, payload: false})
 }
 
-const setTrack = dispatch => async (track: ITract) => {
+const setTrack: React.Dispatch<any>  = dispatch => async (track: ITract) => {
     await TrackPlayer.reset()
     await TrackPlayer.add({
         id: track.id,
@@ -33,26 +33,21 @@ const setTrack = dispatch => async (track: ITract) => {
         duration: track.duration
     })
     
+    await TrackPlayer.play()
     dispatch({type: SET_TRACK, payload: track})
-    setPlay(dispatch)()
-    // TrackPlayer.play()
+    // setPlay(dispatch)()
 }
 
+const seekPlus: React.Dispatch<any>  = dispatch => async (value: number) => {
+    const position = await TrackPlayer.getPosition()
+    await TrackPlayer.seekTo(position + value)
+}
 
-// TrackPlayer.addEventListener(
-//     'playback-state', 
-//     async({ state }: {state: TrackPlayerState}) => {
-//         runInAction(() => {
-//             console.log('State', state)
-//             this._playerState = state
-//         })
-// })
-
-const setPlayerState = dispatch => async (state) => {
+const setPlayerState: React.Dispatch<any>  = dispatch => async (state: number) => {
     // await 
     dispatch({type: SET_PLAYER_STATE, payload: state})
 }
 
-const actions = { setPlay, setPause, setPlayerState, setTrack }
+const actions = { setPlay, setPause, setPlayerState, setTrack, seekPlus }
 
 export default actions

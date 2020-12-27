@@ -4,7 +4,7 @@ import {Box, Text} from 'react-native-design-utility'
 const LibraryScreen: React.FC = () => {
     return (
         <Box f={1} center>
-            <Text>library screen</Text>
+            <Text color="white">library screen</Text>
         </Box>
     )
 }

@@ -1,26 +1,23 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import {Box, Text} from 'react-native-design-utility'
-import {ScrollView } from 'react-native'
+import { ScrollView, ActivityIndicator } from 'react-native'
 import { theme } from '../../theme'
 //components
 import PodcastCard from './components/Home/PodcastCard'
 import Header from './components/common/Header'
 // import PodcastTile from './components/Home/PodcastTile'
 // import CategoryCard from './components/Home/CategoryCard'
-//api
-import {itunesApiServices} from '../utils/api/itunesApiServices'
 import { IPodcast } from '../utils/types/Podcast'
+//context
+import {Context as PodcastContext} from '../context/store/reducers/podcastReducer'
 
 const HomeScreen: React.FC = () => {
-    const [podcasts, setPodcasts] = useState<IPodcast[]>([])
+    // const [podcasts, setPodcasts] = useState<IPodcast[]>([])
+    const {state: {podcasts}, searchPodcast} = useContext<{state: {podcasts: IPodcast[]}, searchPodcast: Function}>(PodcastContext)
 
     useEffect(() => {
-        itunesApiServices.searchPodcast('syntax')
-            .then((results: IPodcast[]) => {
-                setPodcasts(results)
-            })
+        searchPodcast('syntax')
     }, [])
-
 
     return (
         <ScrollView style={{flex: 1}}>
@@ -31,17 +28,27 @@ const HomeScreen: React.FC = () => {
                 <Box ml="sm">
                     <Text size="lg" weight="bold" color="white">Trending</Text>
                 </Box>
-                <Box 
-                    // horizontal 
-                    // showsHorizontalScrollIndicator={false}
-                    mx="sm"
-                    dir="row"
-                    pt="sm"
-                    flexWrap="wrap"
-                    justify="between"
-                >
-                    {podcasts.map((podcast) => <PodcastCard podcast={podcast} key={podcast.trackId}/>)}
-                </Box>
+                
+                {podcasts 
+                ?   (
+                        <Box 
+                            // horizontal 
+                            // showsHorizontalScrollIndicator={false}
+                            mx="sm"
+                            dir="row"
+                            pt="sm"
+                            flexWrap="wrap"
+                            justify="between"
+                        >
+                            {podcasts.map((podcast) => <PodcastCard podcast={podcast} key={podcast.trackId}/>)}
+                        </Box>
+                    )
+                :   (   
+                        <Box center>
+                            <ActivityIndicator color={theme.color.white} size="large"/>
+                        </Box>
+                    )
+                }
             </Box>
 
             {/* <Box mt="sm">

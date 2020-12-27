@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react'
 import {SafeAreaView, StatusBar} from 'react-native'
 import { theme } from '../theme'
 import TrackPlayer, {State as TrackPlayerState} from 'react-native-track-player'
-import TrackPlayerServices from './utils/TrackPlayerServices'
 //navigators
 import MainNavigation from './navigators/MainNavigation'
 //screens
@@ -19,8 +18,19 @@ const Routes: React.FC = () => {
     }, [])
     
     useEffect(() => {
-        TrackPlayer.setupPlayer()
-            .then(() => console.log('Player is setup!'))
+        const playerInit = async () => {
+            await TrackPlayer.setupPlayer()
+            TrackPlayer.updateOptions({
+                stopWithApp: true,
+                capabilities: [
+                    TrackPlayer.CAPABILITY_PLAY,
+                    TrackPlayer.CAPABILITY_PAUSE,
+                    TrackPlayer.CAPABILITY_JUMP_FORWARD,
+                    TrackPlayer.CAPABILITY_JUMP_BACKWARD,
+                ],
+            })
+        }
+        playerInit();
     }, [])
 
     useEffect(() => {

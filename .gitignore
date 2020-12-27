@@ -64,3 +64,6 @@ buck-out/
 
 #testAPI
 testAPI/
+
+#
+android/java_pid16228.hprof 

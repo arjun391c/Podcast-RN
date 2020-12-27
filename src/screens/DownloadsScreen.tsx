@@ -4,7 +4,7 @@ import {Box, Text} from 'react-native-design-utility'
 const DownloadsScreen: React.FC = () => {
     return (
         <Box f={1} center>
-            <Text>Downloads screen</Text>
+            <Text color="white">Downloads screen</Text>
         </Box>
     )
 }

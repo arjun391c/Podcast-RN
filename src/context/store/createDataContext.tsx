@@ -1,10 +1,16 @@
-import React, {createContext, useReducer} from "react"
+import React, { createContext, useReducer} from "react"
 import logger from 'use-reducer-logger'
 
-const createDataContext = (reducer, actions, defaultValue) => {
-    const Context = createContext()
+type returnContext = {
+    Context: any,
+    Provider: React.FC
+}
 
-    const Provider = ({ children }) => {
+const createDataContext = (reducer: any, actions: object, defaultValue: object): returnContext => {
+    
+    const Context = createContext< any | null >(null)
+
+    const Provider: React.FC = ({ children }) => {
         const [state, dispatch] = useReducer(logger(reducer), defaultValue)
 
         const boundActions = {}
@@ -19,6 +25,7 @@ const createDataContext = (reducer, actions, defaultValue) => {
             </Context.Provider>
         )
     }
+    
     return {Context, Provider}
 }
 

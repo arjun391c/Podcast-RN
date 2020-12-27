@@ -15,7 +15,7 @@ import { routes } from '../../../navigators/routes'
 import TrackPlayer from 'react-native-track-player'
 
 const Player: React.FC = () => {
-    const {state, setPlay, setPause} = useContext(PlayerContext)
+    const {state, setPlay, setPause, seekPlus} = useContext(PlayerContext)
     const { navigate } = useNavigation()
 
     return (
@@ -46,7 +46,7 @@ const Player: React.FC = () => {
                             )
 
                         }
-                        <TouchableOpacity onPress={() => TrackPlayer.seekTo(10)} hitSlop={metrics.makeHitSlop(20)} style={{marginLeft: theme.space.sm}}>
+                        <TouchableOpacity onPress={() => seekPlus(30)} hitSlop={metrics.makeHitSlop(20)} style={{marginLeft: theme.space.sm}}>
                             <FeatherIcon name="rotate-cw" size={25} color="white"/>
                         </TouchableOpacity>
                     </Box>
